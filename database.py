@@ -21,4 +21,4 @@ def get_db():
     finally:
         db.close()
 
-DB: TypeAlias = Annotated[Session, Depends(get_db)]
+DB_DEP: TypeAlias = Annotated[Session, Depends(get_db)]
