@@ -1,7 +1,7 @@
 from jose import jwt, JWTError
 from decouple import config
 from datetime import timedelta, datetime, timezone
-from typing import Annotated, TypeAlias
+from typing import Annotated, TypeAlias, Any
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.exceptions import HTTPException
@@ -27,24 +27,30 @@ def authenticate_user(username: str, password: str, db: DB_DEP) -> User | None:
     return user
 
 
-def generate_access_token(user_id: int, username: str, expires_delta: timedelta):
+def generate_access_token(user_id: int, username: str, role: str, expires_delta: timedelta):
     expires = datetime.now(timezone.utc) + expires_delta
-    payload = {"sub": username, "user_id": user_id, "exp": expires}
+    payload = {"sub": username, "user_id": user_id, "role": role, "exp": expires}
     return jwt.encode(payload, SECRET_KEY, ALGORITHM) # type: ignore
 
 
-def get_current_user_id(token: Annotated[str, Depends(oauth2_bearer)], db: DB_DEP) -> int:
+def get_current_user_info(token: Annotated[str, Depends(oauth2_bearer)], db: DB_DEP) -> dict[str, Any]:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM) # type: ignore
-        username = payload.get("sub")
         user_id = payload.get("user_id")
+        username = payload.get("sub")
+        role = payload.get("role")
 
-        if username is None or user_id is None:
+        if username is None or user_id is None or role is None:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Could not validate user.")        
-        return user_id
+        
+        return {
+            "user_id": user_id,
+            "username": username,
+            "role": role
+        }
 
     except JWTError:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Could not validate user.")
 
 
-USER_ID_DEP: TypeAlias = Annotated[int, Depends(get_current_user_id)]
+USER_DEP: TypeAlias = Annotated[dict[str, Any], Depends(get_current_user_info)]
