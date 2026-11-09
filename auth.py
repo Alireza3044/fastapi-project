@@ -36,7 +36,7 @@ def generate_access_token(user_id: int, username: str, expires_delta: timedelta)
 def get_current_user_id(token: Annotated[str, Depends(oauth2_bearer)], db: DB_DEP) -> int:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM) # type: ignore
-        username = payload.get("username")
+        username = payload.get("sub")
         user_id = payload.get("user_id")
 
         if username is None or user_id is None:
