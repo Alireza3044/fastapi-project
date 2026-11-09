@@ -38,7 +38,7 @@ def update_todo(user_id:USER_ID_DEP, db: DB_DEP, tr: TodoSerializer, id: int = P
     if not todo:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "todo not found.")
 
-    for field, value in tr.model_dump().items():
+    for field, value in tr.model_dump(exclude_unset=True).items():
         setattr(todo, field, value)
     db.commit()
 
