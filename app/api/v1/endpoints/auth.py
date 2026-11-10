@@ -10,7 +10,7 @@ from app.schemas.user import PasswordChange, UserCreate
 from app.services.token import TokenService
 from app.services.user import UserService
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -48,4 +48,4 @@ async def change_password(
     pass_data: PasswordChange
 ):
     service = UserService(db)
-    await service.change_password(user_data, pass_data)
+    await service.change_password(user_data["user_id"], pass_data)

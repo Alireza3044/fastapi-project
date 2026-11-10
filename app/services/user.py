@@ -1,11 +1,10 @@
-from typing import Annotated, Any, Optional
+from typing import Optional
 
-from fastapi import Depends, status
+from fastapi import status
 from fastapi.exceptions import HTTPException
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import get_current_user
 from app.db.models.user import User
 from app.schemas.user import PasswordChange, UserCreate
 from app.utils import check_password, hash_password
@@ -57,10 +56,10 @@ class UserService:
 
     async def change_password(
         self,
-        user_data: Annotated[dict[str, Any], Depends(get_current_user)],
+        user_id: int,
         pass_data: PasswordChange
     ) -> User:
-        user = await self.get_user(id=user_data["user_id"])
+        user = await self.get_user(id=user_id)
         data = pass_data.model_dump()
 
         is_valid = check_password(

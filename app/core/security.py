@@ -25,13 +25,13 @@ async def authenticate_user(
 
     if not check_password(str(user.hashed_password), password):
         raise HTTPException(
-            status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status.HTTP_401_UNAUTHORIZED,
             "Invalid username or password"
         )
     return user
 
 
-def generate_access_token(
+async def generate_access_token(
     user_id: int,
     username: str,
     role: str,

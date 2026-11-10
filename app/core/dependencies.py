@@ -11,7 +11,7 @@ settings = get_settings()
 oauth2_scheme = OAuth2PasswordBearer("/api/v1/auth/token")
 
 
-def get_current_user(
+async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)]
 ) -> dict[str, Any]:
     credentials_exception = HTTPException(

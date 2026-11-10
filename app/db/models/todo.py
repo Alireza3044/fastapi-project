@@ -7,7 +7,7 @@ class Todo(Base):
     __tablename__ = "todo"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    title = Column(String, unique=True)
+    title = Column(String)
     description = Column(String)
     priority = Column(Integer)
     complete = Column(Boolean, default=False)
