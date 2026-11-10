@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Path
+from fastapi import APIRouter, Path, status
 from fastapi.exceptions import HTTPException
-from starlette import status
 
 from database import DB_DEP
 from auth import USER_DEP
