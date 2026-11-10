@@ -5,10 +5,12 @@ from decouple import config
 from typing import TypeAlias, Annotated
 
 db_name = config("DB_NAME")
-db_username = config("DB_USER_NAME")
-db_password = config("DB_USER_PASSWORD")
+db_user = config("DB_USER")
+db_password = config("DB_PASSWORD")
+db_host = config("DB_HOST")
+db_port = config("DB_PORT", cast=int)
 
-url = "postgresql+psycopg2://%s:%s@localhost:5432/%s?client_encoding=utf8" % (db_username, db_password, db_name)
+url = "postgresql+psycopg2://%s:%s@%s:%s/%s?client_encoding=utf8" % (db_user, db_password, db_host, db_port, db_name)
 
 engine = create_engine(url)
 
