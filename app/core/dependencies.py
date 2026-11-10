@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
@@ -11,7 +11,9 @@ settings = get_settings()
 oauth2_scheme = OAuth2PasswordBearer("/api/v1/auth/token")
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> dict[str, Any]:
+def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)]
+) -> dict[str, Any]:
     credentials_exception = HTTPException(
         status.HTTP_401_UNAUTHORIZED,
         "Could not validate credentials",
