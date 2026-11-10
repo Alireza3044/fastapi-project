@@ -33,7 +33,7 @@ def generate_access_token(user_id: int, username: str, role: str, expires_delta:
     return jwt.encode(payload, SECRET_KEY, ALGORITHM) # type: ignore
 
 
-def get_current_user_info(token: Annotated[str, Depends(oauth2_bearer)], db: DB_DEP) -> dict[str, Any]:
+def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: DB_DEP) -> dict[str, Any]:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM) # type: ignore
         user_id = payload.get("user_id")
@@ -53,4 +53,4 @@ def get_current_user_info(token: Annotated[str, Depends(oauth2_bearer)], db: DB_
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Could not validate user.")
 
 
-USER_DEP: TypeAlias = Annotated[dict[str, Any], Depends(get_current_user_info)]
+USER_DEP: TypeAlias = Annotated[dict[str, Any], Depends(get_current_user)]
