@@ -20,6 +20,7 @@ async def register_user(
 ):
     service = UserService(db)
     await service.create_user(user_data)
+    return {"detail": "Registered successfully"}
 
 
 @router.post("/token", status_code=status.HTTP_200_OK)
