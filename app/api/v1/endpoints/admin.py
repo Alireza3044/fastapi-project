@@ -1,41 +1,39 @@
-from fastapi import APIRouter, Path, status
-from fastapi.exceptions import HTTPException
+from typing import Annotated, Any
 
-from database import DB_DEP
-from auth import USER_DEP
-from models import Todo
+from fastapi import APIRouter, Depends, Path, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.dependencies import get_current_user
+from app.db.session import get_db
+from app.services.admin import AdminService
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.get("/todo", status_code=status.HTTP_200_OK)
-async def get_all_todos(user: USER_DEP, db: DB_DEP):
-    if user["role"].lower() != "admin":
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "Only admins can access this endpoint.")
-    return db.query(Todo).all()
+async def get_all_todos(
+    user_data: Annotated[dict[str, Any], Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)]
+):
+    service = AdminService(db, user_data["role"])
+    return await service.get_all_todos()
 
 
 @router.get("/todo/{id}", status_code=status.HTTP_200_OK)
-async def get_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
-    if user["role"].lower() != "admin":
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "Only admins can access this endpoint.")
-    
-    todo = db.get(Todo, id)
-    
-    if not todo:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "todo not found.")
-    return todo
+async def get_todo(
+    user_data: Annotated[dict[str, Any], Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    id: int = Path(ge=1)
+):
+    service = AdminService(db, user_data["role"])
+    return await service.get_todo(id)
 
 
 @router.delete("/todo/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
-    if user["role"].lower() != "admin":
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "Only admins can access this endpoint.")
-    
-    todo = db.get(Todo, id)
-    
-    if not todo:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "todo not found.")
-
-    db.delete(todo)
-    db.commit()
+async def delete_todo(
+    user_data: Annotated[dict[str, Any], Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    id: int = Path(ge=1)
+):
+    service = AdminService(db, user_data["role"])
+    await service.delete_todo(id)
