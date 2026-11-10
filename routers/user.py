@@ -15,7 +15,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-def register_user(db: DB_DEP, u: UserSerializer):
+async def register_user(db: DB_DEP, u: UserSerializer):
     raw_user = u.model_dump()
 
     # Remove raw password and set hashed password

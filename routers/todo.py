@@ -11,7 +11,7 @@ router = APIRouter(tags=["todo"])
 
 
 @router.get("/todo", status_code=status.HTTP_200_OK)
-def get_all_todos(user: USER_DEP, db: DB_DEP):
+async def get_all_todos(user: USER_DEP, db: DB_DEP):
     return db.query(Todo).filter_by(owner_id=user["user_id"]).all()
 
 
@@ -23,7 +23,7 @@ async def create_todo(user: USER_DEP, db: DB_DEP, tr: TodoSerializer):
 
 
 @router.get("/todo/{id}", status_code=status.HTTP_200_OK)
-def get_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
+async def get_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
     todo = db.query(Todo).filter_by(id=id, owner_id=user["user_id"]).first()
     
     if not todo:
@@ -32,7 +32,7 @@ def get_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
 
 
 @router.put("/todo/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def update_todo(user: USER_DEP, db: DB_DEP, tr: TodoSerializer, id: int = Path(ge=1)):
+async def update_todo(user: USER_DEP, db: DB_DEP, tr: TodoSerializer, id: int = Path(ge=1)):
     todo = db.query(Todo).filter_by(id=id, owner_id=user["user_id"]).first()
     
     if not todo:
@@ -44,7 +44,7 @@ def update_todo(user: USER_DEP, db: DB_DEP, tr: TodoSerializer, id: int = Path(g
 
 
 @router.delete("/todo/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
+async def delete_todo(user: USER_DEP, db: DB_DEP, id: int = Path(ge=1)):
     todo = db.query(Todo).filter_by(id=id, owner_id=user["user_id"]).first()
     
     if not todo:
