@@ -26,7 +26,7 @@ async def authenticate_user(
     if not check_password(str(user.hashed_password), password):
         raise HTTPException(
             status.HTTP_422_UNPROCESSABLE_CONTENT,
-            "Invalid password"
+            "Invalid username or password"
         )
     return user
 

@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, model_validator
 from typing import Self
+
+from pydantic import BaseModel, Field, model_validator
 
 
 class UserCreate(BaseModel):
@@ -11,7 +12,7 @@ class UserCreate(BaseModel):
     role: str = Field("user")
 
 
-class UserPasswordUpdate(BaseModel):
+class PasswordChange(BaseModel):
     old_password: str = Field(min_length=8)
     new_password: str = Field(min_length=8)
     new_password2: str = Field(min_length=8)
@@ -21,4 +22,3 @@ class UserPasswordUpdate(BaseModel):
         if self.new_password != self.new_password2:
             raise ValueError("new_password and new_password2 do not match")
         return self
-

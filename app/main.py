@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
+from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.db.session import engine
-from app.api.v1.router import api_router
 
 
 @asynccontextmanager
