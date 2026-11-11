@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
 
-from fastapi import Depends, status
+from fastapi import status
 from fastapi.exceptions import HTTPException
 from jose import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.db.models.user import User
-from app.db.session import get_db
 from app.services.user import UserService
 from app.utils import check_password
 
@@ -18,7 +16,7 @@ settings = get_settings()
 async def authenticate_user(
     username: str,
     password: str,
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: AsyncSession
 ) -> User:
     service = UserService(db)
     user = await service.get_user(username=username)

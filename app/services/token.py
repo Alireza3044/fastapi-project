@@ -18,7 +18,7 @@ class TokenService:
             form_data.username, form_data.password, self.db
         )
 
-        token = generate_access_token(
+        token = await generate_access_token(
             user.id,  # type: ignore
             user.username,  # type: ignore
             user.role,  # type: ignore
