@@ -79,7 +79,7 @@ class UserService:
             )
 
         user.hashed_password = hash_password(  # type: ignore
-            data.new_password  # type: ignore
+            data.get("new_password")  # type: ignore
         )
         await self.db.flush()
         await self.db.refresh(user)
