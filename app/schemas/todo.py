@@ -11,6 +11,6 @@ class TodoRead(BaseModel):
     id: int
     title: str
     description: str
-    priority: str
+    priority: int
     complete: bool
     owner_id: int

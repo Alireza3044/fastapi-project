@@ -11,7 +11,9 @@ from app.services.admin import AdminService
 router = APIRouter(tags=["admin"])
 
 
-@router.get("/todo", status_code=status.HTTP_200_OK, response_model=TodoRead)
+@router.get(
+    "/todo", status_code=status.HTTP_200_OK, response_model=list[TodoRead]
+)
 async def get_all_todos(
     user_data: Annotated[dict[str, Any], Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)]
