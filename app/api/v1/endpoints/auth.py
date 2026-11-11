@@ -25,7 +25,7 @@ async def register_user(
 
 @router.post("/token", status_code=status.HTTP_200_OK)
 async def get_access_token(
-    form_data: OAuth2PasswordRequestForm,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Annotated[AsyncSession, Depends(get_db)]
 ):
     service = TokenService(db)
