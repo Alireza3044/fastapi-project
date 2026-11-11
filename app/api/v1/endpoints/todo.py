@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user
 from app.db.session import get_db
-from app.schemas.todo import TodoCreate
+from app.schemas.todo import TodoCreate, TodoRead
 from app.services.todo import TodoService
 
 router = APIRouter(tags=["todo"])
 
 
-@router.get("", status_code=status.HTTP_200_OK)
+@router.get("", status_code=status.HTTP_200_OK, response_model=TodoRead)
 async def get_all_todos(
     user_data: Annotated[dict[str, Any], Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)]
@@ -31,7 +31,7 @@ async def create_todo(
     return {"detail": "Todo created successfully"}
 
 
-@router.get("/{id}", status_code=status.HTTP_200_OK)
+@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=TodoRead)
 async def get_todo(
     user_data: Annotated[dict[str, Any], Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],

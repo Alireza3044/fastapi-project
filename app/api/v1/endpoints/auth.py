@@ -6,7 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user
 from app.db.session import get_db
-from app.schemas.user import PasswordChange, UserCreate
+from app.schemas.token import TokenRead
+from app.schemas.user import PasswordChange, UserCreate, UserRead
 from app.services.token import TokenService
 from app.services.user import UserService
 
@@ -23,7 +24,9 @@ async def register_user(
     return {"detail": "Registered successfully"}
 
 
-@router.post("/token", status_code=status.HTTP_200_OK)
+@router.post(
+    "/token", status_code=status.HTTP_200_OK, response_model=TokenRead
+)
 async def get_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Annotated[AsyncSession, Depends(get_db)]
@@ -32,7 +35,9 @@ async def get_access_token(
     return await service.get_access_token(form_data)
 
 
-@router.get("/profile", status_code=status.HTTP_200_OK)
+@router.get(
+    "/profile", status_code=status.HTTP_200_OK, response_model=UserRead
+)
 async def profile(
     user_data: Annotated[dict[str, Any], Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)]

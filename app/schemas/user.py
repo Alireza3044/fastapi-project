@@ -12,6 +12,15 @@ class UserCreate(BaseModel):
     role: str = Field("user")
 
 
+class UserRead(BaseModel):
+    id: int
+    username: str
+    email: str
+    first_name: str
+    last_name: str
+    role: str
+
+
 class PasswordChange(BaseModel):
     old_password: str = Field(min_length=8)
     new_password: str = Field(min_length=8)
